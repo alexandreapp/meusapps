@@ -1,0 +1,450 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+
+
+</head>
+
+<body class="index-page" ng-app="myAppCrud" ng-controller="customersCtrl as appMsg">
+
+
+    <div class="wrapper">
+        <div class="header header-filter" style="background-image: url('assets/img/bg3.jpeg');">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
+                        <div class="brand">
+                            <h1>Teste Frontend Web.</h1>
+                            <h3>Projeto web based utilizando as tecnologias Angularjs, html5, javascript, CSS3 e servico RESTful (BD SQLServer).</h3>
+
+                            <button class="btn btn-primary btn-lg" ng-click="appMsg.alert()">Mais ...</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main main-raised">
+
+
+            <div class="section section-basic">
+                <div class="container">
+
+                    <div>
+                        <div>
+                            <h2>Visão Geral</h2>
+
+
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div id="donutchartapp" style="width: 450px; height: 350px;"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div id="barchartapp" style="width: 450px; height: 350px;"></div>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary btn-lg" ng-click="novoPerson($index)" data-toggle="modal" data-target="#myModalCadastro">Novo Registro</button>
+
+                            <div>
+                                <div class="col-sm-8"></div>
+
+                                <div class="input-group col-sm-4">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">search</i>
+                                    </span>
+                                    <div class="form-group" style="height:50px;">
+                                        <input type="text" ng-model="procurar" class="form-control" placeholder="Buscar" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="height: 500px;">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th class="hidden-xs text-center">Id</th>
+                                            <th>Nome</th>
+                                            <th class="hidden-xs">Endereço</th>
+                                            <th class="text-right">Visualizar/Editar/Excluir</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr dir-paginate="x in names | itemsPerPage: 5 | filter:procurar">
+                                            <td class="hidden-xs">{{ x.id }}</td>
+                                            <td>{{ x.nome }}</td>
+                                            <td class="hidden-xs">{{ x.endereco }}</td>
+
+                                            <td class="td-actions text-right">
+                                                <button type="button" rel="tooltip" title="Visualizar Registro" class="btn btn-info btn-simple btn-xs" ng-click="editPerson(x.id)" data-toggle="modal" data-target="#myModalView">
+                                                    <i class="fa fa-user"></i>
+                                                </button>
+                                                <button type="button" rel="tooltip" title="Editar Registro" class="btn btn-success btn-simple btn-xs" ng-click="editPerson(x.id)" data-toggle="modal" data-target="#myModal">
+                                                    <i class="fa fa-pencil"></i>
+                                                </button>
+                                                <button type="button" rel="tooltip" title="Excluir" class="btn btn-danger btn-simple btn-xs" ng-click="removePerson(x.id)">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                                <dir-pagination-controls boundary-links="true"
+                                                         direction-links="true">
+                                </dir-pagination-controls>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <footer class="footer">
+            <div class="container">
+                <nav class="pull-left">
+                    <ul>
+                        <li>
+                            <a href="#">
+                                CRUD PESSOAS
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                Projeto Web
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                Teste
+                            </a>
+                        </li>
+
+                    </ul>
+                </nav>
+                <div class="copyright pull-right">
+                    &copy; 2018, Alexandre Tavares.
+                </div>
+            </div>
+        </footer>
+    </div>
+
+
+
+
+
+
+    <!-- Modal Editar -->
+    <div class="modal fade" id="myModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" method="post">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Alterar Registro</h4>
+                </div>
+                <form name="myForm" ng-submit="sendJSonData()">
+                    <div class="modal-body" ng-repeat="dados in dados">
+
+                        <div class="input-group" style="display:none">
+                            <span class="input-group-addon">
+                                <i class="material-icons">arrow_drop_down</i>
+                            </span>
+                            <div class="form-group" style="height:50px;">
+                                <label class="control-label">Id</label>
+                                <input type="text" class="form-control" id="InputId" name="InputId" readonly value="{{ dados.id }}">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">face</i>
+                            </span>
+                            <div class="form-group" style="height:50px;">
+                                <label class="control-label">Nome</label>
+                                <input type="text" class="form-control" id="InputName" name="InputName" value="{{ dados.nome }}" ng-required="true">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">contacts</i>
+                            </span>
+                            <div class="form-group" style="height:50px;">
+                                <label class="control-label">CPF</label>
+                                <input type="text" class="form-control" id="InputDoc" name="InputDoc" placeholder="CPF" onkeypress="cpf()" maxlength="14" value="{{ dados.documento }}" ng-required="true">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">event</i>
+                            </span>
+                            <div class="form-group" style="height:50px;">
+                                <label class="control-label">Data de Nascimento</label>
+                                <input type="date" class="form-control" id="InputDataNascimento" name="InputDataNascimento" min="1900-01-01" max="2018-12-31" maxlength="10" value="{{ dados.data_nascimento }}" ng-required="true">
+                                <span class="material-input"></span>
+                            </div>
+
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">room</i>
+                            </span>
+                            <div class="form-group" style="height:50px;">
+                                <label class="control-label">Endereco</label>
+                                <input type="text" class="form-control" id="InputEndereco" value="{{ dados.endereco }}" ng-required="true">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">group</i>
+                            </span>
+                            <div class="form-group" style="height:50px;">
+                                <label class="control-label">Sexo</label>
+                                <input type="text" class="form-control" id="InputSexo" style="display:none" value="{{ dados.sexo }}">
+                                <div class="form-group">
+                                    <label>
+                                        <input type="radio" ng-model="dados.sexo" value="M"> Masculino
+                                    </label>
+                                    <label>
+                                        <input type="radio" ng-model="dados.sexo" value="F"> Feminino
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <br>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal Core -->
+    <div class="modal fade" id="myModalCadastro" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                </div>
+                <form name="myForm" ng-submit="sendJSonDataNew()">
+                    <div class="modal-body">
+
+                        <div class="input-group" style="display:none">
+                            <span class="input-group-addon">
+                                <i class="material-icons">arrow_drop_down</i>
+                            </span>
+                            <div class="form-group" style="height:50px;">
+                                <label class="control-label">Id</label>
+                                <input type="text" class="form-control" id="InputIdN" name="InputIdN" readonly value="{{ dados.id }}">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">face</i>
+                            </span>
+                            <div class="form-group" style="height:50px;">
+                                <label class="control-label">Nome</label>
+                                <input type="text" class="form-control" id="InputNameN" name="InputNameN" value="{{ dados.nome }}" ng-required="true">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">contacts</i>
+                            </span>
+                            <div class="form-group" style="height:50px;">
+                                <label class="control-label">CPF</label>
+                                <input type="text" class="form-control" id="InputDocN" name="InputDocN" onkeypress="cpfN()" maxlength="14" value="{{ dados.documento }}" ng-required="true">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">event</i>
+                            </span>
+                            <div class="form-group" style="height:50px;">
+                                <label class="control-label">Data de Nascimento</label>
+                                <input type="date" class="form-control" id="InputDataNascimentoN" name="InputDataNascimentoN" placeholder="  /  /    " min="1900-01-01" max="2018-12-31" maxlength="10" value="{{ dados.data_nascimento }}" ng-required="true">
+                                <span class="material-input"></span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">room</i>
+                            </span>
+                            <div class="form-group" style="height:50px;">
+                                <label class="control-label">Endereco</label>
+                                <input type="text" class="form-control" id="InputEnderecoN" value="{{ dados.endereco }}" ng-required="true">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">group</i>
+                            </span>
+                            <div class="form-group" style="height:50px;">
+                                <label class="control-label">Sexo</label>
+                                <input type="text" class="form-control" id="InputSexoN" style="display:none" value="{{ dados.sexo }}">
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" ng-model="dados.sexo" value="M"> Masculino
+                                    </label>
+                                    <label>
+                                        <input type="radio" ng-model="dados.sexo" value="F"> Feminino
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- Modal visualizar -->
+    <div class="modal fade" id="myModalView" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" method="post">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Visualizar Registro</h4>
+                </div>
+                <form name="myForm">
+                    <div class="modal-body" ng-repeat="dados in dados">
+                        <div class="input-group" style="display:none">
+                            <span class="input-group-addon">
+                                <i class="material-icons">arrow_drop_down</i>
+                            </span>
+                            <div class="form-group" style="height:50px;">
+                                <label class="control-label">Id</label>
+                                <input type="text" class="form-control" id="InputIdv" name="InputIdv" readonly value="{{ dados.id }}">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">face</i>
+                            </span>
+                            <div class="form-group" style="height:50px;">
+                                <label class="control-label">Nome</label>
+                                <input type="text" class="form-control" id="InputNamev" name="InputNamev" readonly value="{{ dados.nome }}" ng-required="true">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">contacts</i>
+                            </span>
+                            <div class="form-group" style="height:50px;">
+                                <label class="control-label">CPF</label>
+                                <input type="text" class="form-control" id="InputDocv" name="InputDocv" placeholder="CPF" onkeypress="cpf()" maxlength="14" readonly value="{{ dados.documento }}" ng-required="true">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">event</i>
+                            </span>
+                            <div class="form-group" style="height:50px;">
+                                <label class="control-label">Data de Nascimento</label>
+                                <input type="date" class="form-control" id="InputDataNascimentov" name="InputDataNascimentov" min="1900-01-01" max="2018-12-31" maxlength="10" readonly value="{{ dados.data_nascimento }}" ng-required="true">
+                                <span class="material-input"></span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">room</i>
+                            </span>
+                            <div class="form-group" style="height:50px;">
+                                <label class="control-label">Endereco</label>
+                                <input type="text" class="form-control" id="InputEnderecov" value="{{ dados.endereco }}" ng-required="true" readonly>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">group</i>
+                            </span>
+
+
+                            <div class="form-group" style="height:50px;">
+                                <label class="control-label">Sexo</label>
+                                <input type="text" class="form-control" id="InputSexov" style="display:none" value="{{ dados.sexo }}">
+                                <div>
+                                    <label>
+                                        <input type="radio" ng-model="dados.sexo" value="M"> Masculino
+                                    </label>
+                                    <label>
+                                        <input type="radio" ng-model="dados.sexo" value="F"> Feminino
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="modal-footer">
+                        <input type="submit" value="Fechar" class="btn btn-default" data-dismiss="modal" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <script type="text/javascript">
+
+
+        function cpf() {
+            if (document.getElementById("InputDoc").value.length == 3) {
+                document.getElementById("InputDoc").value = document.getElementById("InputDoc").value + ".";
+            }
+            if (document.getElementById("InputDoc").value.length == 7) {
+                document.getElementById("InputDoc").value = document.getElementById("InputDoc").value + ".";
+            }
+            if (document.getElementById("InputDoc").value.length == 11) {
+                document.getElementById("InputDoc").value = document.getElementById("InputDoc").value + "-";
+            }
+        }
+
+        function cpfN() {
+            if (document.getElementById("InputDocN").value.length == 3) {
+                document.getElementById("InputDocN").value = document.getElementById("InputDocN").value + ".";
+            }
+            if (document.getElementById("InputDocN").value.length == 7) {
+                document.getElementById("InputDocN").value = document.getElementById("InputDocN").value + ".";
+            }
+            if (document.getElementById("InputDocN").value.length == 11) {
+                document.getElementById("InputDocN").value = document.getElementById("InputDocN").value + "-";
+            }
+        }
+    </script>
+
+
+
+
+
+
+</body>
+
+
+</html>
